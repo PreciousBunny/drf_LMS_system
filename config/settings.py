@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'rest_framework',
+    'users.apps.UsersConfig',
 ]
 
 MIDDLEWARE = [
@@ -147,6 +148,27 @@ MEDIA_ROOT = f'{BASE_DIR}/media'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
+EMAIL_HOST = 'smtp.yandex.com'
+EMAIL_PORT = 465
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")      # берет из .env
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")      # берет из .env
+EMAIL_USE_TLS = False            # у gmail наоборот True
+EMAIL_USE_SSL = True             # у gmail наоборот False
+
+
+# Настройки для работы с моделью пользователя
+AUTH_USER_MODEL = 'users.User'  # переопределяет авторизацию
+LOGIN_REDIRECT_URL = '/'  # перенаправление login
+LOGOUT_REDIRECT_URL = '../'  # перенаправление logout
+
+# URL для авторизации
+LOGIN_URL = '/users/'  # вход login_url='/users/'
+
+
+
 
 
 REST_FRAMEWORK = {
