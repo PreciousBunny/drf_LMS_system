@@ -21,4 +21,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api-auth/', include('rest_framework.urls')),  # проверка работы rest framework
     path('', include('users.urls', namespace='users')),
+    path('', include('course.urls', namespace='course')),
 ]
