@@ -47,3 +47,34 @@ class Lesson(models.Model):
         """
         verbose_name = "Урок"
         verbose_name_plural = "Уроки"
+
+
+class Payment(models.Model):
+    """
+    Класс описания модели Платежей (Оплаты).
+    """
+    # Установим флаги со способом оплаты
+    CASH = 'cash'
+    TRANSFER = 'transfer'
+
+    PAYMENT_TYPE = [
+        (CASH, 'cash'),
+        (TRANSFER, 'transfer')
+    ]
+
+    user = models.ForeignKey('users.User', on_delete=models.CASCADE, verbose_name='Пользователь')
+    payment_date = models.DateField(auto_now_add=True, verbose_name='Дата оплаты')
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, verbose_name='Оплаченный курс', **NULLABLE)
+    lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, verbose_name='Оплаченный урок', **NULLABLE)
+    payment_sum = models.PositiveIntegerField(verbose_name='сумма оплаты')
+    payment_type = models.CharField(choices=PAYMENT_TYPE, max_length=30, default=TRANSFER, verbose_name='способ оплаты')
+
+    def __str__(self):
+        return f'Payment({self.user}, {self.course if self.course else self.lesson} - {self.payment_sum}, {self.payment_date})'
+
+    class Meta:
+        """
+        Класс мета-настроек.
+        """
+        verbose_name = 'Платеж'
+        verbose_name_plural = 'Платежи'
