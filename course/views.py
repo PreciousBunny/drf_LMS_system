@@ -4,6 +4,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.permissions import IsAuthenticated
 
 from course.models import Course, Lesson, Payment
+from course.paginations import CoursePagination, LessonPagination
 from course.permissions import UserPermissionsModerator, UserPermissionsOwner
 from course.serializers import CourseSerializer, LessonSerializer, PaymentSerializer
 from users.models import UserRoles
@@ -15,6 +16,7 @@ from users.models import UserRoles
 class CourseViewSet(viewsets.ModelViewSet):
     serializer_class = CourseSerializer
     queryset = Course.objects.all()
+    pagination_class = CoursePagination
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
@@ -31,6 +33,7 @@ class CourseViewSet(viewsets.ModelViewSet):
 class LessonListAPIView(generics.ListAPIView):
     serializer_class = LessonSerializer
     queryset = Lesson.objects.all()
+    pagination_class = LessonPagination
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
