@@ -1,5 +1,8 @@
+import os
+
+from django.conf import settings
 from django.core.management.base import BaseCommand
-from users.models import User
+from users.models import User, UserRoles
 from course.models import Course, Lesson, Payment
 from faker import Faker
 import random
@@ -16,6 +19,7 @@ class Command(BaseCommand):
 
     Метод `handle` выполняет следующие шаги:
     1. Удаляет все записи в моделях User, Payment, Lesson и Course.
+    2. Создает Superuser (администратора) и пользователя с правами Модератора.
     2. Создает 5 пользователей и сохраняет их в список.
     3. Создает 5 курсов и для каждого курса создает 3 урока.
     4. Создает 20 случайных платежей, связанных с пользователями, курсами и уроками.
@@ -28,6 +32,26 @@ class Command(BaseCommand):
         Payment.objects.all().delete()
         Lesson.objects.all().delete()
         Course.objects.all().delete()
+
+        superuser = User.objects.create(
+            email=os.getenv('EMAIL_HOST_ADMIN'),
+            first_name='Admin',
+            last_name='Adm',
+            is_staff=True,
+            is_superuser=True
+        )
+        superuser.set_password(os.getenv('ADMIN_PASSWORD'))
+        superuser.save()
+
+        moderator_user = User.objects.create(
+            email=os.getenv('EMAIL_HOST_MODERATOR'),
+            first_name='Moderator',
+            last_name='Mod',
+            role=UserRoles.MODERATOR
+        )
+        moderator_user.set_password(os.getenv('MODERATOR_PASSWORD'))
+        moderator_user.save()
+
 
         users = []
         for _ in range(5):

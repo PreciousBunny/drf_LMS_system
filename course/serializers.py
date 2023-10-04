@@ -4,12 +4,14 @@ from course.models import *
 
 
 class LessonSerializer(serializers.ModelSerializer):
+    owner = serializers.HiddenField(default=serializers.CurrentUserDefault())
     class Meta:
         model = Lesson
         fields = '__all__'
 
 
 class CourseSerializer(serializers.ModelSerializer):
+    owner = serializers.HiddenField(default=serializers.CurrentUserDefault())
     lessons_count = serializers.SerializerMethodField()  # поле вывода количества уроков в курсе
     lessons = LessonSerializer(source='lesson_set', many=True, read_only=True, )  # поле вывода уроков курса
 
