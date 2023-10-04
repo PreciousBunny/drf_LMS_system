@@ -7,10 +7,7 @@ class IsUserProfile(permissions.BasePermission):
     """
 
     def has_object_permission(self, request, view, obj):
-        if not request.user.is_authenticated():
-            return False
-
-        if request.user.email == obj.email:
-            if view.action in ['list', 'retrieve', 'update', 'partial_update', 'destroy', 'create']:
-                return True
+        if request.user.email == obj.email or request.user.is_superuser and request.method in ['GET', 'POST', 'PUT',
+                                                                                               'DELETE']:
+            return True
         return False
