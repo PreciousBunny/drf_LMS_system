@@ -2,6 +2,7 @@ from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import AbstractUser, UserManager as BaseUserManager
 from django.db import models
 from django.apps import apps
+from django.utils.translation import gettext_lazy as _
 
 # Create your models here.
 
@@ -47,6 +48,14 @@ class UserManager(BaseUserManager):
         return self._create_user(email, password, **extra_fields)
 
 
+class UserRoles(models.TextChoices):
+    """
+    Класс перечисления для выбора ролей пользователя.
+    """
+    MEMBER = 'member', _('member')
+    MODERATOR = 'moderator', _('moderator')
+
+
 class User(AbstractUser):
     """
     Класс для работы с моделью User (пользователя).
@@ -57,6 +66,8 @@ class User(AbstractUser):
     phone = models.CharField(max_length=50, verbose_name='Телефон', **NULLABLE)
     city = models.CharField(max_length=150, verbose_name='Город', **NULLABLE)
     is_active = models.BooleanField(default=True, verbose_name='Активный')
+    role = models.CharField(max_length=15, choices=UserRoles.choices, verbose_name='Роль',
+                            default=UserRoles.MEMBER)
 
     # Переопределение настроек для авторизации и регистрации через модель
     USERNAME_FIELD = "email"
