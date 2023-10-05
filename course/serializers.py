@@ -5,7 +5,10 @@ from course.validators import url_validator
 
 
 class LessonSerializer(serializers.ModelSerializer):
+    # Сокрытие поля "Создатель" и автоматическая привязка его к пользователю
     owner = serializers.HiddenField(default=serializers.CurrentUserDefault())
+
+    # проверка допустимого url_video
     url_video = serializers.URLField(validators=[url_validator])
 
     class Meta:
@@ -14,12 +17,18 @@ class LessonSerializer(serializers.ModelSerializer):
 
 
 class CourseSerializer(serializers.ModelSerializer):
+    # Сокрытие поля "Создатель" и автоматическая привязка его к пользователю
     owner = serializers.HiddenField(default=serializers.CurrentUserDefault())
-    lessons_count = serializers.SerializerMethodField()  # поле вывода количества уроков в курсе
-    lessons = LessonSerializer(source='lesson_set', many=True, read_only=True, )  # поле вывода уроков курса
+
+    # поле вывода количества уроков в курсе
+    lessons_count = serializers.SerializerMethodField()
+    # поле вывода уроков курса
+    lessons = LessonSerializer(source='lesson_set', many=True, read_only=True, )
 
     def get_lessons_count(self, instance):
-        # метод определяет количество уроков в курсе
+        """
+        Метод определяет количество уроков в курсе.
+        """
         lessons = Lesson.objects.filter(course=instance).all()
         if lessons:
             return lessons.count()
