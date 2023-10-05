@@ -10,10 +10,10 @@ app_name = UsersConfig.name
 
 
 urlpatterns = [
-    path('users', UserListAPIView.as_view(), name='user_list'),
-    path('users/detail/<int:pk>', UserRetrieveAPIView.as_view(), name='users_detail'),
-    path('users/create', UserCreateAPIView.as_view(), name='user_create'),
-    path('users/update/<int:pk>', UserUpdateAPIView.as_view(), name='user_update'),
+    path('', UserListAPIView.as_view(), name='user_list'),
+    path('detail/<int:pk>', UserRetrieveAPIView.as_view(), name='users_detail'),
+    path('create', UserCreateAPIView.as_view(), name='user_create'),
+    path('update/<int:pk>', UserUpdateAPIView.as_view(), name='user_update'),
 
     # Authorization Token
     path('login/', views.obtain_auth_token, name='user_login'),

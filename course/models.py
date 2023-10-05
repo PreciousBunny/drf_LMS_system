@@ -78,3 +78,23 @@ class Payment(models.Model):
         """
         verbose_name = 'Платеж'
         verbose_name_plural = 'Платежи'
+
+
+class Subscription(models.Model):
+    """
+    Класс описания модели Подписки на курс.
+
+    """
+    user = models.ForeignKey('users.User', on_delete=models.CASCADE, verbose_name="Пользователь")
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, verbose_name="Курс")
+    is_active = models.BooleanField(default=False, verbose_name='Статус подписки')
+
+    def __str__(self):
+        return f'{self.user} подписан на {self.course.name}'
+
+    class Meta:
+        """
+        Класс мета-настроек.
+        """
+        verbose_name = 'Подписка'
+        verbose_name_plural = 'Подписки'

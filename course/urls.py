@@ -23,4 +23,8 @@ urlpatterns =[
     path('payment', PaymentListAPIView.as_view(), name='payment_list'),
     path('payment/create', PaymentCreateAPIView.as_view(), name='payment_create'),
     path('payment/detail/<int:pk>', PaymentRetrieveAPIView.as_view(), name='payment_detail'),
+
+    # Subscription
+    path('subscribe/<int:course_id>', SubscribeCourseView.as_view(), name='subscribe_course'),
+    path('unsubscribe/<int:course_id>', UnsubscribeCourseView.as_view(), name='unsubscribe_course'),
     ] + router.urls
