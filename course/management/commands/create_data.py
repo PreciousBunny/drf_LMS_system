@@ -7,7 +7,6 @@ from course.models import Course, Lesson, Payment
 from faker import Faker
 import random
 
-
 fake = Faker()
 
 
@@ -52,22 +51,28 @@ class Command(BaseCommand):
         moderator_user.set_password(os.getenv('MODERATOR_PASSWORD'))
         moderator_user.save()
 
-
         users = []
         for _ in range(5):
             email = fake.email()
-            password = fake.password()
             phone = fake.numerify('+1(###)#######')
             city = fake.city()
-            user = User.objects.create(email=email, password=password, phone=phone, city=city)
+            first_name = fake.first_name()
+            last_name = fake.last_name()
+            user = User.objects.create(email=email, phone=phone, city=city,
+                                       first_name=first_name, last_name=last_name)
+            user.set_password(os.getenv('MODERATOR_PASSWORD'))
+            user.save()
             users.append(user)
 
         courses = []
         lessons = []
-        for _ in range(5):
+        for i in range(5):
+            price = fake.pyint(min_value=10000, max_value=300000)
             course = Course.objects.create(
                 name=fake.word(),
                 description=fake.text(),
+                price=price,
+                owner=users[i],
             )
             courses.append(course)
 
@@ -77,13 +82,14 @@ class Command(BaseCommand):
                     description=fake.text(),
                     course=course,
                     url_video=fake.url(),
+                    owner=users[i],
                 )
                 lessons.append(lesson)
 
         for _ in range(20):
             user = random.choice(users)
             payment_date = fake.date_between(start_date='-30d', end_date='today')
-            payment_sum = fake.pyint(min_value=10000, max_value=300000)
+            # payment_sum = fake.pyint(min_value=10000, max_value=300000)
             payment_type = random.choice(['cash', 'transfer'])
 
             is_course = random.choice([True, False])
@@ -94,6 +100,6 @@ class Command(BaseCommand):
                 payment_date=payment_date,
                 course=course_or_lesson if is_course else None,
                 lesson=course_or_lesson if not is_course else None,
-                payment_sum=payment_sum,
+                payment_sum=price,
                 payment_type=payment_type,
             )
