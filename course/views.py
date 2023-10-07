@@ -27,7 +27,7 @@ class CourseViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         """
-        Метод выводи список всех курсов модераторам или администратору, владельцам - только созданные им курсы.
+        Метод выводит список всех курсов модераторам или администратору, владельцам - только созданные им курсы.
         """
         user = self.request.user
         if user.is_staff or user.role == UserRoles.MODERATOR or user.is_superuser:
@@ -44,7 +44,7 @@ class LessonListAPIView(generics.ListAPIView):
 
     def get_queryset(self):
         """
-        Метод выводи список всех уроков модераторам или администратору, владельцам - только созданные им уроки.
+        Метод выводит список всех уроков модераторам или администратору, владельцам - только созданные им уроки.
         """
         user = self.request.user
         if user.is_staff or user.role == UserRoles.MODERATOR or user.is_superuser:
