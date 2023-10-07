@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'django_filters',
     'drf_yasg',
+    'django_celery_beat',
     'users.apps.UsersConfig',
     'course.apps.CourseConfig',
 ]
@@ -238,5 +239,35 @@ SIMPLE_JWT = {
 }
 
 
+# Stripe API uses API keys
 STRIPE_SECRET_KEY = os.getenv('STRIPE_SECRET_KEY')
 
+
+# Настройки кеширования
+CACHE_ENABLED = os.getenv('CACHE_ENABLED')
+
+if CACHE_ENABLED:
+    CACHES = {
+        "default": {
+            "BACKEND": "django.core.cache.backends.redis.RedisCache",
+            # "LOCATION": "redis://127.0.0.1:6379",
+            "LOCATION": os.getenv('CACHE_LOCATION'),
+        }
+    }
+
+
+
+# Настройки для celery
+CELERY_BROKER_URL = 'redis://localhost:6379/0'  # URL-адрес брокера сообщений
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'  # URL-адрес брокера результатов
+CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
+CELERY_TIMEZONE = 'Europe/Moscow'  # Часовой пояс для работы Celery
+CELERY_TASK_TRACK_STARTED = True  # Флаг отслеживания выполнения задач
+CELERY_TASK_TIME_LIMIT = 30 * 60  # Максимальное время на выполнение задачи
+
+CELERY_BEAT_SCHEDULE = {
+    'task-name': {
+        'task': 'course.tasks.check_deactivate_user',  # Путь к задаче
+        'schedule': timedelta(minutes=5),  # Расписание выполнения задачи (например, каждые 10 минут)
+    },
+}
