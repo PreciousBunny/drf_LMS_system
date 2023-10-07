@@ -62,7 +62,24 @@ create database lms_system;
 python manage.py migrate
 ```
 
-16) Запустить сервер (появившуюся ссылку открыть в браузере  http://127.0.0.1:8000/ )
+16) Запустить сервер
 ```bash
 python manage.py runserver
+```
+17) Запустить Celery
+```bash
+celery -A config worker -l INFO
+```
+```bash
+celery -A config beat -l info
+```
+
+## Тестирование.
+* Для запуска тестов:
+```bash
+pytest --ds=config.settings
+```
+* Отобразить процентное покрытие кода тестами:
+```bash
+pytest --ds=config.settings --cov=course --cov report=term-missing
 ```
