@@ -27,10 +27,11 @@ load_dotenv(BASE_DIR / '.env')
 SECRET_KEY = 'django-insecure-!md8=_%@itua5u-qvoj4_=svzi^x8wzvm_lkp5*0ed4hvla==w'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-# DEBUG = False
+# DEBUG = True
+DEBUG = bool(os.getenv('DEBUG'))
 
-ALLOWED_HOSTS = ['127.0.0.1']
+ALLOWED_HOSTS = [os.getenv("ALLOWED_HOST"), "localhost", "127.0.0.1"]
+# ALLOWED_HOSTS = [ ]
 
 
 # Application definition
@@ -95,9 +96,9 @@ DATABASES = {
         # 'NAME': BASE_DIR / 'db.sqlite3',
         # 'ENGINE': 'django.db.backends.postgresql',
         "ENGINE": "django.db.backends.postgresql_psycopg2",
-        'HOST': 'localhost',
+        'HOST': os.getenv('HOST_POSTGRES'),
         'NAME': os.getenv('NAME_POSTGRES'),
-        'PORT': 5432,
+        'PORT': os.getenv('PORT_POSTGRES'),
         'USER': os.getenv('USER_POSTGRES'),
         'PASSWORD': os.getenv('PASSWORD_POSTGRES'),
     }
@@ -141,9 +142,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = 'staticfiles/'
 # STATIC_ROOT = os.path.join(BASE_DIR / 'static')
 # STATICFILES_DIRS = (BASE_DIR / 'static',)
-STATICFILES_DIRS = [BASE_DIR / 'static']
+# STATICFILES_DIRS = [BASE_DIR / 'static']
 
 
 # Пути для загрузки данных от пользователей
@@ -258,8 +260,13 @@ if CACHE_ENABLED:
 
 
 # Настройки для celery
-CELERY_BROKER_URL = 'redis://localhost:6379/0'  # URL-адрес брокера сообщений
-CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'  # URL-адрес брокера результатов
+
+REDIS_PORT = '6379'
+REDIS_HOST = 'redis'
+
+CELERY_BROKER_URL = f'redis://{REDIS_HOST}:{REDIS_PORT}/0'  # URL-адрес брокера сообщений
+CELERY_BROKER_TRANSPORT_OPTIONS = {'visibility_timeout': 3600}
+CELERY_RESULT_BACKEND = f'redis://{REDIS_HOST}:{REDIS_PORT}/0'  # URL-адрес брокера результатов
 CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
 CELERY_TIMEZONE = 'Europe/Moscow'  # Часовой пояс для работы Celery
 CELERY_TASK_TRACK_STARTED = True  # Флаг отслеживания выполнения задач
