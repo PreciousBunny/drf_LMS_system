@@ -180,3 +180,8 @@ cython_debug/
 
 # database.ini
 #.ini
+
+
+/staticfiles/
+/data/cache/dump.rdb
+/.env.docker
